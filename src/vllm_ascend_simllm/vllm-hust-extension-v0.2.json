@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.2-experimental",
+  "extension_id": "org.vllm-hust.simllm",
+  "extension_version": "0.1.0.dev0",
+  "kind": "in_process_plugin",
+  "host": {
+    "provider": "vllm",
+    "name": "vllm-ascend",
+    "version_range": ">=0"
+  },
+  "runtime": {
+    "type": "python",
+    "process_scope": "vllm-processes",
+    "isolation": "trusted_in_process"
+  },
+  "lifecycle_owner": "vllm",
+  "protocols": [
+    {"name": "vllm.scheduler.rewrite-policy", "version_range": ">=1,<2"},
+    {"name": "vllm.kv-reuse.index", "version_range": ">=1,<2"},
+    {"name": "vllm.embedding.provider", "version_range": ">=1,<2"},
+    {"name": "vllm.model-runner.slot-mapping", "version_range": ">=1,<2"}
+  ],
+  "components": [
+    {
+      "component_id": "simllm-host-contract",
+      "implementation_ref": "vllm_ascend_simllm.license_gate:SimLLMHostContractDescriptor",
+      "contracts": [
+        "vllm.scheduler.rewrite-policy.v1",
+        "vllm.kv-reuse.index.v1",
+        "vllm.embedding.provider.v1",
+        "vllm.model-runner.slot-mapping.v1"
+      ],
+      "execution_planes": ["scheduler", "worker", "device"],
+      "isolation": "trusted_in_process",
+      "permissions": ["device_access"]
+    }
+  ],
+  "implementation": [
+    {
+      "type": "python_module",
+      "module": "vllm_ascend_simllm.license_gate",
+      "object": "SimLLMHostContractDescriptor",
+      "status": "import_only"
+    }
+  ],
+  "requires_services": [],
+  "activation": {
+    "entry_points": [],
+    "environment": {},
+    "additional_config": {}
+  }
+}
