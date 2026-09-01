@@ -1,5 +1,17 @@
 """vllm-ascend-simllm inert contract descriptor."""
 
+from .license_gate import (
+    SimLLMHostContractDescriptor,
+    SourceEvidence,
+    SourceMigrationBlocked,
+    SourceRoute,
+    validate_source_evidence,
+)
 
-class VllmAscendSimllmContractProposal:
-    """Metadata-only proposal; this class performs no runtime activation."""
+__all__ = [
+    "SimLLMHostContractDescriptor",
+    "SourceEvidence",
+    "SourceMigrationBlocked",
+    "SourceRoute",
+    "validate_source_evidence",
+]
