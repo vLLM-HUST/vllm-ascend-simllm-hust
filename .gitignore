@@ -5,4 +5,6 @@ __pycache__/
 dist/
 build/
 *.egg-info/
-
+benchmarks/results/**/*.log
+benchmarks/results/qwen35_forward_20260930/*.csv
+benchmarks/results/qwen35_quality_20260930/remote-unit-tests*.txt

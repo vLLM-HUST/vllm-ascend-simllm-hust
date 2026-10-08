@@ -11,8 +11,8 @@ Primary history:
 - [Ascend #70 MERGED](https://github.com/intellistream/vllm-ascend-hust-legacy-20260831/pull/70)
 - [Ascend #80 MERGED](https://github.com/intellistream/vllm-ascend-hust-legacy-20260831/pull/80)
 - [Ascend #157 CLOSED_UNMERGED](https://github.com/intellistream/vllm-ascend-hust-legacy-20260831/pull/157)
-- [Public SimLLM LICENSE REVIEW REQUIRED](https://github.com/CGCL-codes/SimLLM)
+- [Public SimLLM project](https://github.com/CGCL-codes/SimLLM)
 
-Exact legacy commit IDs and the implementation-copy hold are recorded in `provenance/LICENSE-REVIEW.md`.
-
-Closed does not mean merged, and open does not mean accepted. These references are migration evidence, not a release receipt. Exact commits, files, authors, licenses, tests, constraints, and benchmark receipts must be recorded before implementation code is accepted.
+The source migration in this repository uses the legacy Ascend `vllm_ascend/simllm`
+tree. `provenance/LICENSE-REVIEW.md` preserves an earlier review note for
+historical context; it is not a runtime or packaging gate.
