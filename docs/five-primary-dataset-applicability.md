@@ -27,6 +27,11 @@ applicable, commands, per-task outputs, failures, hashes, and reuse events.
 The dataset task metric is primary; TTFT and throughput are supporting data.
 Publish canonical artifacts in `vllm-hust-benchmark` before any website sync.
 
+The [benchmark program's asset audit](https://github.com/vLLM-HUST/vllm-hust-benchmark/tree/236cf9f4a87348e56fbc08316892f8e0f7598633/reports/pujiang-specified-datasets-20261009)
+currently records **zero** primary datasets as contract-ready: MMLU-Pro is
+`MATERIAL_UNFROZEN` and the other four are `MISSING`. No near-name substitute
+was used. These blockers prevent a canonical five-dataset score today.
+
 ## MMLU-Pro control-path diagnostic, 2026-10-09
 
 This is a **20-item diagnostic**, not a program score or speedup result. Source:
@@ -57,3 +62,36 @@ uses a noncanonical prompt/grader; it supports no task-quality or latency
 claim. Raw questions and answers are not committed. The local diagnostic
 summary and output files are retained outside the repository under `/tmp`;
 canonical artifacts await the benchmark program's frozen contract.
+
+## MMLU-Pro 200-item diagnostic, 2026-10-09
+
+To expand the control-path check without running an unfrozen full benchmark,
+the same source Parquet and runner selected 200 rows with seed `20261009`.
+Input JSONL SHA-256:
+`193096be2779523b20d1abd8c124f1a302829d562de8089fdacece3f3aff100e`.
+The committed [`sample200-manifest.jsonl`](../benchmarks/results/mmlu_pro_pilot_20261009/sample200-manifest.jsonl)
+records task IDs and source rows without republishing question text.
+Both arms used the same model, runtime, launch flags, request order, and
+strict-letter scorer as the 20-item run. The per-task B0 and B1 outputs and
+machine-readable [`summary200.json`](../benchmarks/results/mmlu_pro_pilot_20261009/summary200.json)
+are committed alongside the manifest.
+
+| Diagnostic measure | B0 | B1 |
+| --- | ---: | ---: |
+| Tasks | 200 | 200 |
+| Correct under local strict-letter grader | 118 (59%) | 118 (59%) |
+| Request errors / invalid outputs | 0 / 0 | 0 / 0 |
+| Sequential request time (s) | 84.09 | 80.56 |
+
+The B1 server log SHA-256 is
+`bf6705c40d238ef80f9ec36651ac2299a80a570404cbaf69966786341ccc6b46`.
+It records zero request-level `SimLLM: reusing ... semantic tokens` events.
+The output SHA-256 values are
+`2e140d47f2982153bb671a3f02217ffe0e49a23dc21a462026c4bb5c990b835b`
+for B0 and
+`907d62b31eea3af8a99254c8b809eae6b49ab1e9b711b25390d22318586334dc`
+for B1. These were independent questions, so the plugin did not exercise its
+reuse path. The timing difference is **not** attributed to SimLLM: there was
+no KV reuse, and the endpoints ran on separate NPUs while the other service
+could be starting. This local scorer and 200-item sample are not the program's
+frozen MMLU-Pro contract and must not be entered as canonical task accuracy.
