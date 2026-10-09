@@ -10,6 +10,7 @@ import hashlib
 import json
 import random
 import re
+import time
 import urllib.request
 from pathlib import Path
 
@@ -73,6 +74,7 @@ def run(args: argparse.Namespace) -> None:
     rows = [json.loads(line) for line in args.input.read_text().splitlines()]
     with args.output.open("w", encoding="utf-8") as target:
         for row in rows:
+            started = time.perf_counter()
             request = urllib.request.Request(
                 f"{args.url.rstrip('/')}/v1/chat/completions",
                 data=json.dumps(
@@ -99,9 +101,15 @@ def run(args: argparse.Namespace) -> None:
                     "correct": correct,
                     "output_text": text,
                     "usage": output.get("usage"),
+                    "latency_s": time.perf_counter() - started,
                 }
             except Exception as exc:
-                result = {"id": row["id"], "answer": row["answer"], "error": str(exc)}
+                result = {
+                    "id": row["id"],
+                    "answer": row["answer"],
+                    "error": str(exc),
+                    "latency_s": time.perf_counter() - started,
+                }
             target.write(json.dumps(result, ensure_ascii=False) + "\n")
             target.flush()
             print(result["id"], "correct", result.get("correct"), flush=True)
@@ -129,6 +137,9 @@ def summarize(args: argparse.Namespace) -> None:
             "errors": len(errors),
             "invalid_output": sum(
                 item.get("prediction") is None and "error" not in item for item in rows
+            ),
+            "sequential_request_seconds": sum(
+                item.get("latency_s", 0.0) for item in rows
             ),
         }
     metrics["plugin_control_path"] = {

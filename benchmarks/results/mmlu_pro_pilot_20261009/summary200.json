@@ -1,0 +1,27 @@
+{
+  "input_ids_aligned": true,
+  "runs": {
+    "baseline": {
+      "output_sha256": "2e140d47f2982153bb671a3f02217ffe0e49a23dc21a462026c4bb5c990b835b",
+      "tasks": 200,
+      "correct": 118,
+      "accuracy": 0.59,
+      "errors": 0,
+      "invalid_output": 0,
+      "sequential_request_seconds": 84.09113834501477
+    },
+    "plugin": {
+      "output_sha256": "907d62b31eea3af8a99254c8b809eae6b49ab1e9b711b25390d22318586334dc",
+      "tasks": 200,
+      "correct": 118,
+      "accuracy": 0.59,
+      "errors": 0,
+      "invalid_output": 0,
+      "sequential_request_seconds": 80.55984108601115
+    }
+  },
+  "plugin_control_path": {
+    "requests_with_reuse_event": 0,
+    "reused_tokens": 0
+  }
+}
