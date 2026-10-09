@@ -3,9 +3,15 @@
   "display_name": "SimLLM",
   "evidence": {
     "index": "https://github.com/vLLM-HUST/vllm-ascend-simllm-hust",
-    "latest_result": "https://github.com/vLLM-HUST/vllm-ascend-simllm-hust",
-    "performance_claims": [],
-    "qualification": "unqualified"
+    "latest_result": "https://github.com/vLLM-HUST/vllm-ascend-simllm-hust/pull/5",
+    "performance_claims": [
+      {
+        "label": "matched-real-online-tested-cell",
+        "scope": "Qwen3.5 W8A8, two independent 5,000-request fixed-card replays with one output token",
+        "result": "Throughput improved 20.39% and 18.78% with lower median and p95 TTFT; the prefill-dominant workload does not establish long-generation benefit."
+      }
+    ],
+    "qualification": "qualified-in-tested-cell"
   },
   "lifecycle": {
     "activation_contract": "See the extension manifest and README; discovery alone does not enable this MOD.",
@@ -20,8 +26,13 @@
   "mod_id": "simllm-migration",
   "repository": "vllm-ascend-simllm-hust",
   "responsibility": {
-    "advisor_status": "unknown",
-    "advisors": [],
+    "advisor_status": "declared",
+    "advisors": [
+      {
+        "name": "Ruikun Luo / 罗瑞坤",
+        "relationship": "internal"
+      }
+    ],
     "maintainers": [
       {
         "github": "GuMorming",
