@@ -14,39 +14,42 @@
     "isolation": "trusted_in_process"
   },
   "lifecycle_owner": "vllm",
-  "protocols": [
-    {"name": "vllm.scheduler.rewrite-policy", "version_range": ">=1,<2"},
-    {"name": "vllm.kv-reuse.index", "version_range": ">=1,<2"},
-    {"name": "vllm.embedding.provider", "version_range": ">=1,<2"},
-    {"name": "vllm.model-runner.slot-mapping", "version_range": ">=1,<2"}
-  ],
+  "protocols": [],
   "components": [
     {
-      "component_id": "simllm-host-contract",
-      "implementation_ref": "vllm_ascend_simllm.license_gate:SimLLMHostContractDescriptor",
+      "component_id": "simllm-worker",
+      "implementation_ref": "vllm_ascend_simllm.plugin:register",
       "contracts": [
-        "vllm.scheduler.rewrite-policy.v1",
-        "vllm.kv-reuse.index.v1",
-        "vllm.embedding.provider.v1",
-        "vllm.model-runner.slot-mapping.v1"
+        "vllm.general_plugins.v1"
       ],
-      "execution_planes": ["scheduler", "worker", "device"],
+      "execution_planes": [
+        "worker",
+        "device"
+      ],
       "isolation": "trusted_in_process",
-      "permissions": ["device_access"]
+      "permissions": [
+        "device_access"
+      ]
     }
   ],
   "implementation": [
     {
-      "type": "python_module",
-      "module": "vllm_ascend_simllm.license_gate",
-      "object": "SimLLMHostContractDescriptor",
-      "status": "import_only"
+      "type": "python_entry_point",
+      "group": "vllm.general_plugins",
+      "name": "simllm"
     }
   ],
   "requires_services": [],
   "activation": {
-    "entry_points": [],
-    "environment": {},
+    "entry_points": [
+      {
+        "group": "vllm.general_plugins",
+        "name": "simllm"
+      }
+    ],
+    "environment": {
+      "VLLM_ASCEND_SIMLLM_ENABLED": "1"
+    },
     "additional_config": {}
   }
 }

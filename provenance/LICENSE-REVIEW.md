@@ -1,4 +1,4 @@
-# SimLLM source migration hold
+# Historical SimLLM source review
 
 The historical implementation is identified and does not need to be rediscovered:
 
@@ -11,10 +11,6 @@ The historical implementation is identified and does not need to be rediscovered
   `e75a2b6301ef`, `0f4da0a33535`, `44c40343d8d1`, `aeed44dfea1d`,
   `bb7b901ec771`
 
-The implementation appears related to the public `CGCL-codes/SimLLM` project,
-which did not expose a reusable license when this migration was reviewed. Copying
-implementation patches into this Apache-2.0 repository is therefore on hold.
-
-Release requires either a license declaration from the copyright holder or a
-clean-room implementation against a documented behavior and host-hook contract.
-Metadata, manifest work, and interface design may continue meanwhile.
+This note records the source review state before the owner-directed migration.
+The repository now contains the legacy Ascend implementation as an installable
+plugin. The earlier hold in this note is superseded by that migration.
