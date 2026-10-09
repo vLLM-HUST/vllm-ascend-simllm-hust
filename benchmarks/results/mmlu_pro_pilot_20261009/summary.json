@@ -1,0 +1,25 @@
+{
+  "input_ids_aligned": true,
+  "runs": {
+    "baseline": {
+      "output_sha256": "d2a99597529f8f07635710d46ed0f1f8bf2b5d740c5b4dc771f330d593b3ab78",
+      "tasks": 20,
+      "correct": 14,
+      "accuracy": 0.7,
+      "errors": 0,
+      "invalid_output": 0
+    },
+    "plugin": {
+      "output_sha256": "f55d16314f12c771e5d1d90ca53e9ddc68c79c5ac1357554150eab746d55b52d",
+      "tasks": 20,
+      "correct": 14,
+      "accuracy": 0.7,
+      "errors": 0,
+      "invalid_output": 0
+    }
+  },
+  "plugin_control_path": {
+    "requests_with_reuse_event": 0,
+    "reused_tokens": 0
+  }
+}
