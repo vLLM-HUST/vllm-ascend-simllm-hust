@@ -13,11 +13,11 @@ similar looking prompts alone does not establish a hit.
 
 | Dataset | Status | Concrete reason | Owner and next step |
 | --- | --- | --- | --- |
-| MMLU-Pro | not-exercised | A pinned 20-item diagnostic B0/B1 run reached the plugin and stored 20 tasks, but logged zero request-level KV-reuse events. Independent questions did not exercise the optimization path. The canonical item/evaluator contract remains unfrozen. | @GuMorming with benchmark maintainers: freeze the official split, prompt/scorer and task manifest; define a repeated or genuinely similar MMLU-Pro workload if this dataset is expected to exercise reuse, then repeat matched B0/B1 with request-level evidence. |
-| HLE-Verified | blocked | The full verified set versus verified-gold subset and grader are not frozen; no adapter or task-level run exists. | @GuMorming: agree on subset and grader revision, implement per-item scoring and reuse trace, then run matched B0/B1. |
-| SWE-bench-Pro | blocked | A validated release, fresh-sandbox regrading path, agent scaffold/tool policy, and request-to-task trace are absent. | @GuMorming with benchmark maintainers: pin release and isolated grader, integrate the serving endpoint into the agent runner, then run matched B0/B1 with resolved-task rate. |
-| FrontierScience | blocked | Olympiad and Research require separate pinned answer/scoring contracts; neither runner is wired to this plugin. | @GuMorming with benchmark maintainers: pin both tracks and graders, implement separate per-track outcomes and reuse trace, then run matched B0/B1. |
-| Terminal-Bench 2.1 | blocked | The Harbor 2.1 task release, environment, agent scaffold, tool policy, budget, and request-to-task trace are not pinned in this repository. | @GuMorming with benchmark maintainers: freeze the Harbor contract, integrate the serving endpoint, then run matched B0/B1 with task resolution as primary. |
+| MMLU-Pro | not-exercised | The source snapshot is frozen. A pinned 200-item diagnostic B0/B1 run stored tasks but logged zero request-level KV-reuse events. Independent questions did not exercise the optimization path. Its task manifest and canonical scorer remain pending. | @GuMorming: review the zero-hit conclusion and integrate the frozen five-shot task contract when approved; benchmark maintainers: freeze the formal task manifest/scorer. Run matched formal B0/B1 only after the execution gate is met. |
+| HLE-Verified | blocked | The 2,500-row source snapshot is frozen. Formal rights review, full-versus-Gold choice, judge/scorer contract, image handling, and execution image remain pending. Gold includes image tasks and cannot silently become a text-only score. | Benchmark maintainers: approve rights and judge/evaluation contract; @GuMorming: add request-to-task reuse telemetry and B0/B1 adapter once the contract is executable. |
+| SWE-bench-Pro | blocked | The source and task/image mapping are frozen, but rights review, an AMD64 fresh-sandbox backend, agent/tool/budget contract, and isolated regrader remain pending. | Benchmark maintainers and execution-environment provider: freeze rights, sandbox, agent and regrader; @GuMorming: integrate the SimLLM service and request-to-task trace once available. |
+| FrontierScience | blocked | Olympiad and Research source inputs are frozen and preliminary track-specific protocol code exists, but the actual judge and semantic calibration are not complete. No SimLLM task run exists. | Benchmark maintainers: approve separate track judge/scorer contracts; @GuMorming: implement the paired SimLLM runner and separate track outcomes once approved. |
+| Terminal-Bench 2.1 | blocked | The 89-task source and image digest audit and a candidate Harbor plan exist; actual AMD64 Docker/Harbor execution, model connectivity from that backend, verifier validation, rights review, and final agent/scorer contract are pending. | Execution-environment provider and benchmark maintainers: complete the Harbor and contract gates; @GuMorming: connect SimLLM and collect per-task resolution and reuse traces. |
 
 For every future comparison, B0 must be the same Qwen3.5-35B-A3B weights and
 Ascend serving stack with SimLLM disabled; B1 changes only SimLLM activation
@@ -27,10 +27,21 @@ applicable, commands, per-task outputs, failures, hashes, and reuse events.
 The dataset task metric is primary; TTFT and throughput are supporting data.
 Publish canonical artifacts in `vllm-hust-benchmark` before any website sync.
 
-The [benchmark program's asset audit](https://github.com/vLLM-HUST/vllm-hust-benchmark/tree/236cf9f4a87348e56fbc08316892f8e0f7598633/reports/pujiang-specified-datasets-20261009)
-currently records **zero** primary datasets as contract-ready: MMLU-Pro is
-`MATERIAL_UNFROZEN` and the other four are `MISSING`. No near-name substitute
-was used. These blockers prevent a canonical five-dataset score today.
+The [initial asset audit](https://github.com/vLLM-HUST/vllm-hust-benchmark/tree/236cf9f4a87348e56fbc08316892f8e0f7598633/reports/pujiang-specified-datasets-20261009)
+recorded zero contract-ready datasets. [Benchmark PR #257](https://github.com/vLLM-HUST/vllm-hust-benchmark/pull/257)
+subsequently froze and checked the five source snapshots, so all five are now
+`asset-frozen`, but none is thereby `executable`. The benchmark program JSON
+is the current machine-readable authority. No near-name substitute was used.
+These remaining contract and environment blockers prevent a canonical
+five-dataset score today.
+
+The active [V5.5 acceptance boundary](https://github.com/vLLM-HUST/vllm-hust-benchmark/blob/main/docs/ACCEPTANCE_V5_5.md)
+requires Qwen3.5-35B-A3B BF16, TP=2 on two Ascend 910B2 devices. B0 and B1
+also require signed release and OCI digests plus actual startup/effective
+configuration receipts from release/evaluation engineering. The 20- and
+200-item diagnostics below used W8A8, TP=1 on 910B3 and cannot be promoted to
+formal V5.5 evidence. The currently accessible `train8-docker` host has 910B3
+devices and does not contain the separately verified five-dataset asset bundle.
 
 ## MMLU-Pro control-path diagnostic, 2026-10-09
 
