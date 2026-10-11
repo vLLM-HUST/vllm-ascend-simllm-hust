@@ -13,7 +13,7 @@ similar looking prompts alone does not establish a hit.
 
 | Dataset | Status | Concrete reason | Owner and next step |
 | --- | --- | --- | --- |
-| MMLU-Pro | not-exercised | The source snapshot is frozen. A pinned 200-item diagnostic B0/B1 run stored tasks but logged zero request-level KV-reuse events. Independent questions did not exercise the optimization path. Its task manifest and canonical scorer remain pending. | @GuMorming: review the zero-hit conclusion and integrate the frozen five-shot task contract when approved; benchmark maintainers: freeze the formal task manifest/scorer. Run matched formal B0/B1 only after the execution gate is met. |
+| MMLU-Pro | not-exercised | The source snapshot is frozen. A pinned 200-item W8A8 run and a 20-item BF16 TP2 run on 910B3 stored tasks but logged zero request-level KV-reuse events. These diagnostics did not exercise the optimization path. Its formal task manifest and scorer remain pending. | @GuMorming: review the zero-hit conclusion and integrate the frozen five-shot task contract when approved; benchmark maintainers: freeze the formal task manifest/scorer. Run matched formal B0/B1 only after the execution gate is met. |
 | HLE-Verified | blocked | The 2,500-row source snapshot is frozen. Formal rights review, full-versus-Gold choice, judge/scorer contract, image handling, and execution image remain pending. Gold includes image tasks and cannot silently become a text-only score. | Benchmark maintainers: approve rights and judge/evaluation contract; @GuMorming: add request-to-task reuse telemetry and B0/B1 adapter once the contract is executable. |
 | SWE-bench-Pro | blocked | The source and task/image mapping are frozen, but rights review, an AMD64 fresh-sandbox backend, agent/tool/budget contract, and isolated regrader remain pending. | Benchmark maintainers and execution-environment provider: freeze rights, sandbox, agent and regrader; @GuMorming: integrate the SimLLM service and request-to-task trace once available. |
 | FrontierScience | blocked | Olympiad and Research source inputs are frozen and preliminary track-specific protocol code exists, but the actual judge and semantic calibration are not complete. No SimLLM task run exists. | Benchmark maintainers: approve separate track judge/scorer contracts; @GuMorming: implement the paired SimLLM runner and separate track outcomes once approved. |
@@ -42,6 +42,23 @@ configuration receipts from release/evaluation engineering. The 20- and
 200-item diagnostics below used W8A8, TP=1 on 910B3 and cannot be promoted to
 formal V5.5 evidence. The currently accessible `train8-docker` host has 910B3
 devices and does not contain the separately verified five-dataset asset bundle.
+The user authorized a clearly labeled BF16 TP2 compatibility diagnostic on
+910B3. Its result is recorded below; the 910B2 acceptance boundary still applies.
+
+## MMLU-Pro BF16 TP2 910B3 diagnostic, 2026-10-11
+
+The same 20 fixed test questions were run sequentially on B0 and B1 with the
+same BF16 model, same Ascend 910B3 cards 0,1, and TP=2. B0 was stopped before
+B1 started. Both returned 14/20 correct under the local strict-letter grader,
+zero request errors, and identical predictions. B0 and B1 sequential client
+request durations totaled 9.48 and 10.40 seconds, respectively. B1 stored 20
+tasks per TP worker but logged **zero request-level KV reuse events**. A fivefold
+repeat of one 518-token prompt also produced zero reuse events. No latency or
+throughput improvement can be attributed to SimLLM in these tests. The full
+configuration, hashes, per-task outputs, failure/retry note, and reproduction
+commands are in the
+[`BF16 910B3 diagnostic`](../benchmarks/results/mmlu_pro_bf16_910b3_20261011/README.md).
+This is not a canonical MMLU-Pro score or formal V5.5 acceptance result.
 
 ## MMLU-Pro control-path diagnostic, 2026-10-09
 
