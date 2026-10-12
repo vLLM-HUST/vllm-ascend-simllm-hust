@@ -18,12 +18,41 @@
 
 from __future__ import annotations
 
+import math
 import os
 from dataclasses import dataclass
 
+_PREFIX = "VLLM_ASCEND_SIMLLM_"
+_SUFFIXES = frozenset(
+    {
+        "ENABLED",
+        "COSINE_THRESHOLD",
+        "LSH_NUM_BITS",
+        "LSH_BATCH_THRESHOLD",
+        "LSH_HAMMING_RADIUS",
+        "KV_CACHE_SIZE",
+        "KV_CACHE_MAX_BYTES",
+        "HYBRID_REUSE_MODE",
+        "HYBRID_RECOMPUTE_TOKENS",
+        "SANDWICH_BOTTOM",
+        "SANDWICH_TOP",
+        "EMBEDDING_POOLING",
+        "DEFERRAL_RATIO",
+        "MAX_DEFERRALS",
+        "PROFILE",
+    }
+)
+
 
 def _environment(name: str, default: str) -> str:
-    return os.environ.get(f"VLLM_ASCEND_SIMLLM_{name}", default)
+    return os.environ.get(f"{_PREFIX}{name}", default)
+
+
+def _boolean(name: str) -> bool:
+    value = _environment(name, "0")
+    if value not in {"0", "1"}:
+        raise ValueError(f"{_PREFIX}{name} must be 0 or 1")
+    return value == "1"
 
 
 @dataclass
@@ -70,8 +99,34 @@ class SimLLMConfig:
     profile: bool = False
 
     def __post_init__(self) -> None:
+        if (
+            not math.isfinite(self.cosine_threshold)
+            or not 0 <= self.cosine_threshold <= 1
+        ):
+            raise ValueError("COSINE_THRESHOLD must be finite and between 0 and 1")
+        if not math.isfinite(self.deferral_ratio) or not 0 <= self.deferral_ratio <= 1:
+            raise ValueError("DEFERRAL_RATIO must be finite and between 0 and 1")
+        for name in (
+            "lsh_num_bits",
+            "lsh_batch_threshold",
+            "kv_cache_size",
+            "kv_cache_max_bytes",
+        ):
+            if getattr(self, name) < 1:
+                raise ValueError(f"{name.upper()} must be positive")
+        if not 0 <= self.lsh_hamming_radius <= self.lsh_num_bits:
+            raise ValueError("LSH_HAMMING_RADIUS must be between 0 and LSH_NUM_BITS")
+        for name in ("sandwich_bottom", "sandwich_top", "max_deferrals"):
+            if getattr(self, name) < 0:
+                raise ValueError(f"{name.upper()} must be nonnegative")
+        if self.embedding_pooling not in {"mean", "last", "cls"}:
+            raise ValueError("EMBEDDING_POOLING must be mean, last, or cls")
         if self.hybrid_reuse_mode not in {
-            "aggressive", "exact", "aligned", "tail", "tail_anchor"
+            "aggressive",
+            "exact",
+            "aligned",
+            "tail",
+            "tail_anchor",
         }:
             raise ValueError(
                 "HYBRID_REUSE_MODE must be aggressive, exact, aligned, tail, "
@@ -87,8 +142,15 @@ class SimLLMConfig:
         Returns a configuration snapshot — repeated calls may reflect env-var changes
         (useful for testing), but production code should call once at init.
         """
+        unknown = sorted(
+            key
+            for key in os.environ
+            if key.startswith(_PREFIX) and key[len(_PREFIX) :] not in _SUFFIXES
+        )
+        if unknown:
+            raise ValueError(f"Unknown SimLLM configuration: {', '.join(unknown)}")
         return cls(
-            enabled=bool(int(_environment("ENABLED", "0"))),
+            enabled=_boolean("ENABLED"),
             cosine_threshold=float(_environment("COSINE_THRESHOLD", "0.8")),
             lsh_num_bits=int(_environment("LSH_NUM_BITS", "64")),
             lsh_batch_threshold=int(_environment("LSH_BATCH_THRESHOLD", "32")),
@@ -104,5 +166,5 @@ class SimLLMConfig:
             embedding_pooling=_environment("EMBEDDING_POOLING", "mean"),
             deferral_ratio=float(_environment("DEFERRAL_RATIO", "0.5")),
             max_deferrals=int(_environment("MAX_DEFERRALS", "3")),
-            profile=bool(int(_environment("PROFILE", "0"))),
+            profile=_boolean("PROFILE"),
         )

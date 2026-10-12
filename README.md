@@ -71,6 +71,25 @@ include both `ascend` (the platform plugin) and `simllm`, for example
 Loading only `simllm` prevents Ascend's Triton compatibility setup and can
 stop the server during import.
 
+### Stop, disable, roll back, and uninstall
+
+Stop the **service you started** with SIGTERM and wait for its process group to
+exit. Remove `VLLM_ASCEND_SIMLLM_ENABLED=1` from the service environment (or
+remove the Extension Manager activation) before restarting to disable reuse.
+The worker patch is installed at import time; changing the environment of a
+running service does not undo it. To roll back the package, stop that service,
+install the previously qualified wheel, and restart with SimLLM disabled until
+its configuration has been rechecked. To remove it entirely, stop the service,
+run `python -m pip uninstall vllm-ascend-simllm` in the serving environment,
+and restart vLLM. Installation, opt-in activation, fresh-process rollback,
+and uninstall can be checked without a model using
+`python benchmarks/verify_wheel_lifecycle.py`.
+
+Unknown `VLLM_ASCEND_SIMLLM_*` variables and invalid setting values now fail
+configuration parsing before patch activation. See
+[`docs/runtime-support.md`](docs/runtime-support.md) for the tested runtime
+matrix and the boundaries of this verification.
+
 ## Configuration
 
 All settings are read by the plugin from the worker process environment:

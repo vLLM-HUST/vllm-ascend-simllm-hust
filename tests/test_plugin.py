@@ -6,6 +6,8 @@ import sys
 from importlib.machinery import ModuleSpec
 from types import ModuleType
 
+import pytest
+
 from vllm_ascend_simllm import plugin
 
 
@@ -13,6 +15,15 @@ def test_register_is_inert_without_enablement(monkeypatch) -> None:
     monkeypatch.delenv("VLLM_ASCEND_SIMLLM_ENABLED", raising=False)
     monkeypatch.setattr(sys, "meta_path", list(sys.meta_path))
     plugin.register()
+    assert not any(isinstance(item, plugin._RunnerFinder) for item in sys.meta_path)
+
+
+def test_invalid_config_does_not_install_import_hook(monkeypatch) -> None:
+    monkeypatch.setenv("VLLM_ASCEND_SIMLLM_ENABLED", "1")
+    monkeypatch.setenv("VLLM_ASCEND_SIMLLM_KV_CACHE_SZE", "2")
+    monkeypatch.setattr(sys, "meta_path", list(sys.meta_path))
+    with pytest.raises(ValueError, match="KV_CACHE_SZE"):
+        plugin.register()
     assert not any(isinstance(item, plugin._RunnerFinder) for item in sys.meta_path)
 
 
