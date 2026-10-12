@@ -62,3 +62,36 @@ def test_tail_requires_positive_recompute_window(monkeypatch, tokens) -> None:
     monkeypatch.setenv("VLLM_ASCEND_SIMLLM_HYBRID_RECOMPUTE_TOKENS", tokens)
     with pytest.raises(ValueError, match="HYBRID_RECOMPUTE_TOKENS"):
         SimLLMConfig.from_env()
+
+
+def test_unknown_setting_is_rejected(monkeypatch) -> None:
+    monkeypatch.setenv("VLLM_ASCEND_SIMLLM_HYBRID_RECOMPUTE_TOKEN", "512")
+    with pytest.raises(ValueError, match="HYBRID_RECOMPUTE_TOKEN"):
+        SimLLMConfig.from_env()
+
+
+@pytest.mark.parametrize("name", ["ENABLED", "PROFILE"])
+@pytest.mark.parametrize("value", ["true", "2", "-1"])
+def test_boolean_settings_require_zero_or_one(monkeypatch, name, value) -> None:
+    monkeypatch.setenv(f"VLLM_ASCEND_SIMLLM_{name}", value)
+    with pytest.raises(ValueError, match=name):
+        SimLLMConfig.from_env()
+
+
+@pytest.mark.parametrize(
+    ("name", "value"),
+    [
+        ("COSINE_THRESHOLD", "nan"),
+        ("COSINE_THRESHOLD", "1.1"),
+        ("DEFERRAL_RATIO", "inf"),
+        ("LSH_NUM_BITS", "0"),
+        ("LSH_HAMMING_RADIUS", "65"),
+        ("KV_CACHE_SIZE", "0"),
+        ("KV_CACHE_MAX_BYTES", "-1"),
+        ("EMBEDDING_POOLING", "middle"),
+    ],
+)
+def test_invalid_settings_fail_before_activation(monkeypatch, name, value) -> None:
+    monkeypatch.setenv(f"VLLM_ASCEND_SIMLLM_{name}", value)
+    with pytest.raises(ValueError, match=name):
+        SimLLMConfig.from_env()
