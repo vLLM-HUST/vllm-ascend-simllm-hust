@@ -3,11 +3,13 @@
 Issue #2 is **not ready to close**. PR #10 is merged at `8101b03`; the
 follow-up activation guards and tests now include a successful installed-wheel
 inference and rollback diagnostic on the owner-approved 910B3 environment.
-The source-snapshot and original provenance criteria remain unresolved.
+The tested host's Python source snapshot is now retained. The owner confirmed
+that `PROVENANCE.md` accurately records the source; the original issue's
+license/authorization wording still needs an explicit maintainer disposition.
 
 | Requirement | Evidence and remaining work |
 | --- | --- |
-| Provenance / authorization | The owner instructed this migration to proceed without this gate. That instruction is not a published copyright-holder authorization or an independent implementation record; the original issue criterion remains formally unresolved. |
+| Provenance / authorization | On 2026-10-19 the repository owner confirmed `PROVENANCE.md` records the correct source. The original issue also asks for copyright-holder authorization or an independent implementation record; maintainers need to record whether they amend or retain that criterion before closing. |
 | Real adapter / entry point | The wheel exposes `vllm.general_plugins:simllm`; it wraps the Ascend runner after import. Existing device replays exercised KV storage/reuse. Manager lifecycle boundaries remain unchanged. |
 | Compatibility matrix and rejection | Runtime support is narrowed to recorded Python 3.11 and package revisions. New tests reject unqualified/missing packages, missing/private-interface changes, and visible foreign runner replacements. Editable source integrity and hardware/CANN qualification remain separate requirements. |
 | Configuration, conflicts and dependency failures | PR #10 added strict configuration parsing. This branch initializes dependencies before replacing either host method and tests constructor failure, repeated activation, later conflict, embedding failure and fatal KV-restore failure. |
@@ -37,11 +39,20 @@ an upstream `DeviceOperator` circular import before model loading. The probe
 now initializes Ascend operators before loading the worker. Keep the failed
 attempt as diagnostic evidence; it is not an inference failure or score.
 
-On this remote environment, the Ascend source tree's `.git` points to an
-unavailable worktree parent, so `git rev-parse HEAD` fails. Its reported package
-metadata alone cannot establish the actual source revision. The observed
-`model_runner_v1.py` SHA-256 is
+On this remote environment, the editable vLLM and Ascend source trees' `.git`
+files point to unavailable worktree parents, so `git rev-parse HEAD` fails.
+Their reported package versions alone cannot establish the actual source
+revision. The post-test snapshot captures all 3,016 Python source files and
+root packaging metadata actually mapped by these two editable installations.
+The archive and per-file SHA-256 manifest are retained in
+[`benchmarks/results/issue2_inference_rollback_20261019/host-source`](../benchmarks/results/issue2_inference_rollback_20261019/host-source/).
+The archive SHA-256 is
+`b900706d184cbf3756bd1ec025de8f7fecc3fb21268a6c6871e7bb360dbc1fad`.
+Its `model_runner_v1.py` SHA-256 equals the value observed during inference:
 `407da57242c5700e76d2b5980979c32f8d27af1ccf9a68f6ed6ef39e0baaa7ee`.
+The snapshot was captured after the inference run; only the runner had a
+during-run hash, so other source files cannot be proven unchanged since the
+run. Compiled kernels and non-Python assets are outside this snapshot's scope.
 
 The real-host wheel probe passed all three fresh-process runner states
 (disabled, enabled, disabled) and overlay uninstall. Its tested wheel SHA-256
@@ -61,10 +72,8 @@ are retained in the
 
 ## Work before closure
 
-1. Restore a reliable source revision record or archive/checksum the actual
-   runtime source tree. The actual tested plugin wheels are now retained.
-2. Resolve the original issue's provenance criterion explicitly in the public
+1. Resolve the original issue's provenance criterion explicitly in the public
    issue, or amend that criterion through its maintainer; do not silently mark
    it as satisfied by repository ownership.
-3. Review the new PR and its CI, merge the accepted engineering changes, then
+2. Review the new PR and its CI, merge the accepted engineering changes, then
    update the issue checklist against the final evidence.

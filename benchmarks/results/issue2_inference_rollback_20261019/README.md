@@ -98,4 +98,18 @@ actually installed and ran the rollback arm. The continuation is retained in
 All services and the temporary model copy were cleaned up after success;
 `cleanup.json` and `device7-after.txt` record the final state. `SHA256SUMS`
 checksums the retained artifacts. The host's broken Git worktree reference
-remains the separate source-snapshot gap recorded in the issue #2 audit.
+was addressed with a post-test source snapshot. It contains the Python source
+files and root packaging metadata from both editable package paths used by
+this run. See [`host-source/host-source-manifest.json`](host-source/host-source-manifest.json)
+and [`host-source/host-python-source.tar.gz`](host-source/host-python-source.tar.gz).
+The 3,016 files in the archive were checked against their SHA-256 manifest;
+the runner hash matches `experiment.json`. The capture occurred after inference,
+so it does not independently prove that every other source file was unchanged
+at test time. Compiled kernels and non-Python assets are excluded.
+After copying `benchmarks/snapshot_host_source.py` to the remote host, recapture
+with its qualified Python:
+
+```bash
+/data/jxd/envs/vllm-hust-v1-cann91/bin/python \
+  /tmp/simllm-issue2-oct19/snapshot_host_source.py /tmp/host-source-snapshot
+```
