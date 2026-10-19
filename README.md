@@ -47,6 +47,11 @@ python -m pip install .
 VLLM_ASCEND_SIMLLM_ENABLED=1 vllm serve /path/to/model
 ```
 
+Activation currently accepts only the qualified Python 3.11 and exact host
+package versions in [the runtime support record](docs/runtime-support.md).
+Other versions fail before activation. Default-off installation remains usable
+on Python 3.10 and later without importing the host or initializing NPU code.
+
 The package registers `simllm` in `vllm.general_plugins`. It is inert until
 `VLLM_ASCEND_SIMLLM_ENABLED=1` is present when the worker loads. The hook
 applies the SimLLM patch after the host's model runner module is imported.
@@ -84,6 +89,10 @@ run `python -m pip uninstall vllm-ascend-simllm` in the serving environment,
 and restart vLLM. Installation, opt-in activation, fresh-process rollback,
 and uninstall can be checked without a model using
 `python benchmarks/verify_wheel_lifecycle.py`.
+That clean-environment probe verifies activation rejection when host dependencies
+are absent. On the qualified Ascend environment, run
+`python benchmarks/verify_host_lifecycle.py` to check wheel activation against the
+real runner, fresh-process disable, and removal of the disposable overlay wheel.
 
 Unknown `VLLM_ASCEND_SIMLLM_*` variables and invalid setting values now fail
 configuration parsing before patch activation. See
