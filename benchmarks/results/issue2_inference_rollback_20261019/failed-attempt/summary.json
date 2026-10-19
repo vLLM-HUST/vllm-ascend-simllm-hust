@@ -1,0 +1,13 @@
+{
+  "diagnostic_only": true,
+  "device": "7",
+  "model": "/data/jxd/Qwen3.5-35B-A3B-W8A8",
+  "model_config_sha256": "5e4d7f74fec2f360eb9cfbfcd6ec0c4c76e684d3a11caaed259d9fd9bfbc7944",
+  "input_sha256": "90f3c3229d96237b389e2a3f45fa8f8618d270921091211166661fec4a4e2c41",
+  "requests_per_arm": 30,
+  "final_wheel_sha256": "7ae77f00e47a4de1ad34acbbd02db57c4d0d565af2184ceee62490f621566666",
+  "rollback_wheel_sha256": "10c0db015afa70b34277c8272814e5ffca0715350344041a7c6b384c4498dfea",
+  "stages": [],
+  "passed": false,
+  "error": "Traceback (most recent call last):\n  File \"/tmp/simllm-issue2-oct19/benchmarks/verify_inference_rollback.py\", line 278, in main\n    raise RuntimeError(f\"{name} server exited: {server.returncode}\")\nRuntimeError: baseline server exited: 1\n"
+}

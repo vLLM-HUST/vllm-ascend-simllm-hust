@@ -11,6 +11,24 @@ import pytest
 from vllm_ascend_simllm import plugin
 
 
+@pytest.fixture(autouse=True)
+def qualified_runtime(monkeypatch):
+    monkeypatch.setattr(plugin, "check_runtime", lambda: None)
+
+
+def test_unqualified_runtime_leaves_no_hook(monkeypatch):
+    monkeypatch.setenv("VLLM_ASCEND_SIMLLM_ENABLED", "1")
+    monkeypatch.setattr(sys, "meta_path", list(sys.meta_path))
+
+    def reject():
+        raise RuntimeError("unqualified host")
+
+    monkeypatch.setattr(plugin, "check_runtime", reject)
+    with pytest.raises(RuntimeError, match="unqualified host"):
+        plugin.register()
+    assert not any(isinstance(item, plugin._RunnerFinder) for item in sys.meta_path)
+
+
 def test_register_is_inert_without_enablement(monkeypatch) -> None:
     monkeypatch.delenv("VLLM_ASCEND_SIMLLM_ENABLED", raising=False)
     monkeypatch.setattr(sys, "meta_path", list(sys.meta_path))
@@ -36,6 +54,17 @@ def test_register_patches_loaded_runner(monkeypatch) -> None:
     monkeypatch.setattr(plugin, "_patch_runner", lambda loaded: calls.append(loaded))
     plugin.register()
     assert calls == [module]
+
+
+def test_loaded_module_without_runner_rejected(monkeypatch):
+    monkeypatch.setenv("VLLM_ASCEND_SIMLLM_ENABLED", "1")
+    monkeypatch.setattr(sys, "meta_path", list(sys.meta_path))
+    monkeypatch.setitem(
+        sys.modules, plugin.RUNNER_MODULE, ModuleType(plugin.RUNNER_MODULE)
+    )
+    with pytest.raises(RuntimeError, match="NPUModelRunner"):
+        plugin.register()
+    assert not any(isinstance(item, plugin._RunnerFinder) for item in sys.meta_path)
 
 
 def test_register_patches_runner_after_module_import(monkeypatch) -> None:

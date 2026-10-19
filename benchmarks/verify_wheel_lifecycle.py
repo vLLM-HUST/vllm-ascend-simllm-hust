@@ -17,10 +17,18 @@ from vllm_ascend_simllm import plugin
 
 eps = metadata.entry_points(group='vllm.general_plugins')
 assert sum(ep.name == 'simllm' for ep in eps) == 1
-plugin.register()
+if sys.argv[1] == 'reject':
+    try:
+        plugin.register()
+    except RuntimeError:
+        pass
+    else:
+        raise AssertionError('An unqualified clean environment must reject activation')
+else:
+    plugin.register()
 finders = [finder for finder in sys.meta_path
            if isinstance(finder, plugin._RunnerFinder)]
-assert len(finders) == int(sys.argv[1]), len(finders)
+assert len(finders) == 0, len(finders)
 assert importlib.util.find_spec('vllm_ascend') is None
 """
 
@@ -60,7 +68,7 @@ def main() -> None:
         # in a fresh worker process after the flag is removed.
         run(str(python), "-c", PROBE, "0", env=clean_env)
         enabled_env = {**clean_env, "VLLM_ASCEND_SIMLLM_ENABLED": "1"}
-        run(str(python), "-c", PROBE, "1", env=enabled_env)
+        run(str(python), "-c", PROBE, "reject", env=enabled_env)
         run(str(python), "-c", PROBE, "0", env=clean_env)
         run(str(python), "-m", "pip", "uninstall", "-y", "vllm-ascend-simllm")
         run(
@@ -71,7 +79,8 @@ def main() -> None:
             env=clean_env,
         )
         print(
-            "wheel lifecycle: install, inert, enable, restart rollback, uninstall: PASS"
+            "wheel lifecycle: install, inert, reject unqualified activation, "
+            "restart rollback, uninstall: PASS"
         )
 
 

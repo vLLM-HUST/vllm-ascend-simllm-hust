@@ -1,0 +1,16 @@
+[
+  "/tmp/simllm-inference-rollback-oct19/run5/venv/bin/python",
+  "/tmp/simllm-issue2-oct19/tests/e2e/bench_similarity_workload.py",
+  "--input",
+  "/tmp/simllm-issue2-oct19/benchmarks/fixtures/qwen35_warmup30.jsonl",
+  "--url",
+  "http://127.0.0.1:8128",
+  "--model",
+  "qwen35-lifecycle",
+  "--max-tokens",
+  "16",
+  "--chat",
+  "--capture-text",
+  "--concurrency",
+  "1"
+]

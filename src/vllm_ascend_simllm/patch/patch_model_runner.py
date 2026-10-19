@@ -31,6 +31,7 @@ from typing import Any
 
 import torch
 
+from vllm_ascend_simllm.compatibility import check_runner, check_runtime
 from vllm_ascend_simllm.config import SimLLMConfig
 from vllm_ascend_simllm.kv_reuse import KVReuseEngine
 from vllm_ascend_simllm.utils import (
@@ -73,6 +74,7 @@ _sandwich_config: Any = None  # SandwichConfig
 _kv_reuse_engine: Any = None  # KVReuseEngine
 _original_execute_model: Any = None
 _original_model_forward: Any = None
+_patched_runner_cls: Any = None
 
 # Per-forward injection map — built before _model_forward, consumed by the
 # hijacked do_kv_cache_update inside every attention layer.
@@ -193,6 +195,7 @@ def apply_simllm_patch(model_runner_cls: Any | None = None) -> None:
     global _simllm_config, _kv_manager, _simhash_hasher
     global _similarity_identifier, _sandwich_config, _kv_reuse_engine
     global _original_execute_model, _original_model_forward
+    global _patched_runner_cls
 
     config = SimLLMConfig.from_env()
     if not config.enabled:
@@ -203,13 +206,19 @@ def apply_simllm_patch(model_runner_cls: Any | None = None) -> None:
 
         model_runner_cls = NPUModelRunner
 
-    if getattr(model_runner_cls, "execute_model", None) is _simllm_execute_model:
-        return
+    check_runtime()
+    if _patched_runner_cls is not None:
+        if (
+            model_runner_cls is _patched_runner_cls
+            and model_runner_cls.execute_model is _simllm_execute_model
+            and model_runner_cls._model_forward is _simllm_model_forward
+        ):
+            return
+        raise RuntimeError("SimLLM runner conflict: an active patch was replaced")
+    check_runner(model_runner_cls)
 
     logger.info("Applying Sim-LLM patch to NPUModelRunner …")
     logger.setLevel(logging.INFO)
-
-    _simllm_config = config
 
     from vllm_ascend_simllm.kv_manager import KVManager
     from vllm_ascend_simllm.kv_reuse import KVReuseEngine
@@ -217,36 +226,42 @@ def apply_simllm_patch(model_runner_cls: Any | None = None) -> None:
     from vllm_ascend_simllm.sandwich import SandwichConfig
     from vllm_ascend_simllm.similarity import SimilarityIdentifier
 
-    _kv_manager = KVManager(
+    kv_manager = KVManager(
         max_cache_size=config.kv_cache_size,
         max_cache_bytes=config.kv_cache_max_bytes,
     )
-    _simhash_hasher = SimHashHasher(
+    simhash_hasher = SimHashHasher(
         dim=4096,  # default for Qwen2.5-7B; overridden after model load
         num_bits=config.lsh_num_bits,
     )
-    _similarity_identifier = SimilarityIdentifier(
+    similarity_identifier = SimilarityIdentifier(
         cosine_threshold=config.cosine_threshold,
         lsh_batch_threshold=config.lsh_batch_threshold,
         lsh_num_bits=config.lsh_num_bits,
     )
-    _sandwich_config = SandwichConfig(
+    sandwich_config = SandwichConfig(
         bottom_layers=config.sandwich_bottom,
         top_layers=config.sandwich_top,
     )
-    _kv_reuse_engine = KVReuseEngine(
+    kv_reuse_engine = KVReuseEngine(
         block_size=128,  # Ascend 910B optimal; overridden from kv_cache_config later
         num_kv_heads=8,  # overridden after model load
         head_size=128,  # overridden after model load
     )
 
-    # Patch execute_model (lightweight — triggers the full pipeline).
+    # No runner method or singleton is changed until all dependencies and
+    # constructors have succeeded.
+    _simllm_config = config
+    _kv_manager = kv_manager
+    _simhash_hasher = simhash_hasher
+    _similarity_identifier = similarity_identifier
+    _sandwich_config = sandwich_config
+    _kv_reuse_engine = kv_reuse_engine
     _original_execute_model = model_runner_cls.execute_model
-    model_runner_cls.execute_model = _simllm_execute_model  # type: ignore[method-assign]
-
-    # Patch _model_forward to restore and snapshot per-layer KV.
     _original_model_forward = model_runner_cls._model_forward
+    model_runner_cls.execute_model = _simllm_execute_model  # type: ignore[method-assign]
     model_runner_cls._model_forward = _simllm_model_forward  # type: ignore[method-assign]
+    _patched_runner_cls = model_runner_cls
 
     logger.info(
         "Sim-LLM patch applied (cache_size=%d, threshold=%.2f, "

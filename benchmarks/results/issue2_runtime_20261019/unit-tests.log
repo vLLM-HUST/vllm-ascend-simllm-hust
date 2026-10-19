@@ -1,0 +1,11 @@
+ss...................................................................... [ 31%]
+........................................................................ [ 62%]
+........................................................................ [ 94%]
+.............                                                            [100%]
+=============================== warnings summary ===============================
+../../data/jxd/envs/vllm-hust-v1-cann91/lib/python3.11/site-packages/torch/jit/_script.py:365: 14 warnings
+  /data/jxd/envs/vllm-hust-v1-cann91/lib/python3.11/site-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+227 passed, 2 skipped, 4 deselected, 14 warnings in 27.06s

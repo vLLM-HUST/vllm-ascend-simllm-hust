@@ -1,0 +1,4 @@
+Processing /tmp/simllm-inference-rollback-oct19/wheels/final/vllm_ascend_simllm-0.1.0.dev0-py3-none-any.whl
+Installing collected packages: vllm-ascend-simllm
+Successfully installed vllm-ascend-simllm-0.1.0.dev0
+WARNING: There was an error checking the latest version of pip.

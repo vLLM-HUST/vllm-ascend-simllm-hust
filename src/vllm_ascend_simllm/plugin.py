@@ -12,6 +12,7 @@ from importlib.machinery import ModuleSpec, PathFinder
 from types import ModuleType
 from typing import Any
 
+from .compatibility import check_runtime
 from .config import SimLLMConfig
 
 RUNNER_MODULE = "vllm_ascend.worker.model_runner_v1"
@@ -55,8 +56,9 @@ def register() -> None:
     """Register the worker patch when explicitly enabled by Extension Manager."""
     if not SimLLMConfig.from_env().enabled:
         return
+    check_runtime()
     loaded = sys.modules.get(RUNNER_MODULE)
-    if loaded is not None and hasattr(loaded, "NPUModelRunner"):
+    if loaded is not None:
         _patch_runner(loaded)
         return
     if not any(isinstance(finder, _RunnerFinder) for finder in sys.meta_path):

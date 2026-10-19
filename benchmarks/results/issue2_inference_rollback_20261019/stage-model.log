@@ -1,0 +1,24 @@
+Staging bytes 39810882313 files 22
+Verified Qwen3.5-35B-A3B_best_practice.yaml
+Verified chat_template.jinja
+Verified generation_config.json
+Verified preprocessor_config.json
+Verified config.json
+Verified merges.txt
+Verified quant_model_description.json
+Verified quant_model_weights-00004-of-00010.safetensors
+Verified quant_model_weights-00008-of-00010.safetensors
+Verified quant_model_weights-00006-of-00010.safetensors
+Verified quant_model_weights-00003-of-00010.safetensors
+Verified quant_model_weights.safetensors.index.json
+Verified tokenizer_config.json
+Verified video_preprocessor_config.json
+Verified tokenizer.json
+Verified quant_model_weights-00001-of-00010.safetensors
+Verified vocab.json
+Verified quant_model_weights-00005-of-00010.safetensors
+Verified quant_model_weights-00007-of-00010.safetensors
+Verified quant_model_weights-00002-of-00010.safetensors
+Verified quant_model_weights-00010-of-00010.safetensors
+Verified quant_model_weights-00009-of-00010.safetensors
+LOCAL_MODEL_VERIFIED
