@@ -608,7 +608,10 @@ def _simllm_execute_model(
     guarded_hybrid = getattr(
         self, "_has_gdn", False
     ) is True and _simllm_config.hybrid_reuse_mode in {
-        "exact", "aligned", "tail", "tail_anchor"
+        "exact",
+        "aligned",
+        "tail",
+        "tail_anchor",
     }
     exact = (
         _simllm_identify_prefixes(scheduler_output, complete_source_only=True)
@@ -989,7 +992,8 @@ def _simllm_identify_token_overlap(
     matches: dict[int, MatchResult] = {}
     aligned = getattr(_simllm_config, "hybrid_reuse_mode", "aggressive") == "aligned"
     anchored = getattr(_simllm_config, "hybrid_reuse_mode", "aggressive") in {
-        "tail", "tail_anchor"
+        "tail",
+        "tail_anchor",
     }
     full_context_guard = (
         getattr(_simllm_config, "hybrid_reuse_mode", "aggressive") == "tail"
@@ -1232,7 +1236,8 @@ def _simllm_prepopulate_hybrid_states(self: Any, reuse: dict[str, Any]) -> None:
     """Restore attention blocks and the current DeltaNet running state."""
     layout = _simllm_hybrid_layout(self)
     tail_mode = getattr(_simllm_config, "hybrid_reuse_mode", None) in {
-        "tail", "tail_anchor"
+        "tail",
+        "tail_anchor",
     }
     zero_recurrent_states: dict[int, tuple[torch.Tensor, ...]] = {}
     req_ids = self.input_batch.req_ids[: self.input_batch.num_reqs]
@@ -1508,7 +1513,8 @@ def _simllm_extract_kv(self: Any, hidden_states: Any) -> None:
                     kv_caches, layout, strict=True
                 ):
                     if recurrent and _simllm_config.hybrid_reuse_mode in {
-                        "tail", "tail_anchor"
+                        "tail",
+                        "tail_anchor",
                     }:
                         # Approximate tail hits always reset this state. Avoid
                         # gathering every GDN layer for cold source snapshots.

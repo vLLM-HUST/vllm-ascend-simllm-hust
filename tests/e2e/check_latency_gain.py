@@ -78,22 +78,13 @@ def main() -> None:
     metrics["gain_pct"] = {
         "throughput": 100
         * (
-            metrics["plugin"]["requests_per_s"]
-            / metrics["baseline"]["requests_per_s"]
+            metrics["plugin"]["requests_per_s"] / metrics["baseline"]["requests_per_s"]
             - 1
         ),
         "ttft_p50": 100
-        * (
-            1
-            - metrics["plugin"]["ttft_p50_s"]
-            / metrics["baseline"]["ttft_p50_s"]
-        ),
+        * (1 - metrics["plugin"]["ttft_p50_s"] / metrics["baseline"]["ttft_p50_s"]),
         "ttft_p95": 100
-        * (
-            1
-            - metrics["plugin"]["ttft_p95_s"]
-            / metrics["baseline"]["ttft_p95_s"]
-        ),
+        * (1 - metrics["plugin"]["ttft_p95_s"] / metrics["baseline"]["ttft_p95_s"]),
     }
     metrics["minimum_gain_pct"] = args.minimum_gain_pct
     metrics["passed"] = all(
