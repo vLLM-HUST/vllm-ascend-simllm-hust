@@ -1,0 +1,8 @@
+STAGE baseline: install /tmp/simllm-inference-rollback-oct19/wheels/rollback/vllm_ascend_simllm-0.1.0.dev0-py3-none-any.whl enabled=False
+STAGE baseline: completed evidence revalidated
+STAGE final: install /tmp/simllm-inference-rollback-oct19/wheels/final/vllm_ascend_simllm-0.1.0.dev0-py3-none-any.whl enabled=True
+STAGE final: completed evidence revalidated
+STAGE rollback: install /tmp/simllm-inference-rollback-oct19/wheels/rollback/vllm_ascend_simllm-0.1.0.dev0-py3-none-any.whl enabled=False
+STAGE rollback: ready, replay 30 requests
+STAGE rollback: PASS, semantic reuse events=0
+INFERENCE_AND_WHEEL_ROLLBACK_PASS

@@ -1,0 +1,7 @@
+{
+  "requests_per_arm": 30,
+  "input_ids_and_prompt_token_counts_equal": true,
+  "semantic_events": 24,
+  "semantic_events_linked_to_client_request_ids": 24,
+  "rollback_text_and_token_counts_equal": true
+}
