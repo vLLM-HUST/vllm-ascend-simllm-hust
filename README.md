@@ -78,8 +78,8 @@ stop the server during import.
 
 ### Stop, disable, roll back, and uninstall
 
-Stop the **service you started** with SIGTERM and wait for its process group to
-exit. Remove `VLLM_ASCEND_SIMLLM_ENABLED=1` from the service environment (or
+Stop the **service you started** and wait for its process group to exit. Remove
+`VLLM_ASCEND_SIMLLM_ENABLED=1` from the service environment (or
 remove the Extension Manager activation) before restarting to disable reuse.
 The worker patch is installed at import time; changing the environment of a
 running service does not undo it. To roll back the package, stop that service,
@@ -93,6 +93,26 @@ That clean-environment probe verifies activation rejection when host dependencie
 are absent. On the qualified Ascend environment, run
 `python benchmarks/verify_host_lifecycle.py` to check wheel activation against the
 real runner, fresh-process disable, and removal of the disposable overlay wheel.
+
+For a foreground service started with the command above, press `Ctrl-C` and
+wait for it to exit before running the next command. In a managed deployment,
+stop the service through its service manager and wait for the worker processes
+to exit. Use the same model and serving flags for each restart:
+
+```bash
+# Restart with SimLLM disabled. A fresh process is required.
+VLLM_ASCEND_SIMLLM_ENABLED=0 vllm serve /path/to/model
+
+# After stopping that service, restore a previously qualified wheel.
+python -m pip install --force-reinstall --no-deps /path/to/previous.whl
+VLLM_ASCEND_SIMLLM_ENABLED=0 vllm serve /path/to/model
+
+# After stopping that service, remove the plugin entirely.
+python -m pip uninstall -y vllm-ascend-simllm
+VLLM_PLUGINS=ascend vllm serve /path/to/model
+```
+
+Run one `vllm serve` line at a time; stop it before moving to the next step.
 
 Unknown `VLLM_ASCEND_SIMLLM_*` variables and invalid setting values now fail
 configuration parsing before patch activation. See
