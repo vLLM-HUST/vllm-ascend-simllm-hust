@@ -1,0 +1,29 @@
+WARNING: The directory '/Users/gumorming/Library/Caches/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Processing ./.
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: vllm-ascend-simllm
+  Building wheel for vllm-ascend-simllm (pyproject.toml): started
+  Building wheel for vllm-ascend-simllm (pyproject.toml): finished with status 'done'
+  Created wheel for vllm-ascend-simllm: filename=vllm_ascend_simllm-0.1.0.dev0-py3-none-any.whl size=57054 sha256=4cf69830f90aabc4256f339219113f2f9505b5f44dfdc3741c0e7b2dc7c7a27e
+  Stored in directory: /private/var/folders/rg/qx7hkwrs2czf1x16p3b43hzr0000gn/T/pip-ephem-wheel-cache-o26dmmiz/wheels/ab/22/41/da051f59e5cd4fc64b0bbd3481ce82b610a8e1cc432f75fbb2
+Successfully built vllm-ascend-simllm
+
+[notice] A new release of pip is available: 26.0.1 -> 26.2.1
+[notice] To update, run: /tmp/simllm-issue2-oct19/bin/python -m pip install --upgrade pip
+WARNING: The directory '/Users/gumorming/Library/Caches/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Processing /var/folders/rg/qx7hkwrs2czf1x16p3b43hzr0000gn/T/simllm-wheel-lifecycle-4ckd31ol/wheel/vllm_ascend_simllm-0.1.0.dev0-py3-none-any.whl
+Installing collected packages: vllm-ascend-simllm
+Successfully installed vllm-ascend-simllm-0.1.0.dev0
+
+[notice] A new release of pip is available: 26.0.1 -> 26.2.1
+[notice] To update, run: /var/folders/rg/qx7hkwrs2czf1x16p3b43hzr0000gn/T/simllm-wheel-lifecycle-4ckd31ol/venv/bin/python -m pip install --upgrade pip
+WARNING: The directory '/Users/gumorming/Library/Caches/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Found existing installation: vllm-ascend-simllm 0.1.0.dev0
+Uninstalling vllm-ascend-simllm-0.1.0.dev0:
+  Successfully uninstalled vllm-ascend-simllm-0.1.0.dev0
+wheel lifecycle: install, inert, reject unqualified activation, restart rollback, uninstall: PASS

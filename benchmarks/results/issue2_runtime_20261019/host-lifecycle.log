@@ -1,0 +1,43 @@
+WARNING: There was an error checking the latest version of pip.
+Processing ./.
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: vllm-ascend-simllm
+  Building wheel for vllm-ascend-simllm (pyproject.toml): started
+  Building wheel for vllm-ascend-simllm (pyproject.toml): finished with status 'done'
+  Created wheel for vllm-ascend-simllm: filename=vllm_ascend_simllm-0.1.0.dev0-py3-none-any.whl size=52647 sha256=12dc24c9992b12e19afd4a4bd1265d86c7990e262f641599489992d6053ab608
+  Stored in directory: /tmp/pip-ephem-wheel-cache-u28y6ytu/wheels/9a/b4/31/d0aef740570231475155d0bac09e3a77f6c66c67544aa7e972
+Successfully built vllm-ascend-simllm
+Processing /tmp/simllm-host-lifecycle-8gkl_hpi/vllm_ascend_simllm-0.1.0.dev0-py3-none-any.whl
+Installing collected packages: vllm-ascend-simllm
+Successfully installed vllm-ascend-simllm-0.1.0.dev0
+WARNING: There was an error checking the latest version of pip.
+[W1019 02:06:34.063056746 FunctionLoader.cpp:44] Warning: LD_PRELOAD detected, FunctionLoader prefers RTLD_DEFAULT for symbol resolution. (function operator())
+INFO 10-19 02:06:56 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 10-19 02:06:56 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 10-19 02:06:56 [__init__.py:66] Loading plugin ascend
+INFO 10-19 02:06:56 [__init__.py:272] Platform plugin ascend is activated
+INFO 10-19 02:06:56 [platform.py:70] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+host runner enabled=False: PASS
+[W1019 02:07:47.157742375 FunctionLoader.cpp:44] Warning: LD_PRELOAD detected, FunctionLoader prefers RTLD_DEFAULT for symbol resolution. (function operator())
+INFO 10-19 02:08:09 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 10-19 02:08:09 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 10-19 02:08:09 [__init__.py:66] Loading plugin ascend
+INFO 10-19 02:08:09 [__init__.py:272] Platform plugin ascend is activated
+INFO 10-19 02:08:10 [platform.py:70] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+host runner enabled=True: PASS
+[W1019 02:08:36.920710972 FunctionLoader.cpp:44] Warning: LD_PRELOAD detected, FunctionLoader prefers RTLD_DEFAULT for symbol resolution. (function operator())
+INFO 10-19 02:08:56 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 10-19 02:08:56 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 10-19 02:08:56 [__init__.py:66] Loading plugin ascend
+INFO 10-19 02:08:56 [__init__.py:272] Platform plugin ascend is activated
+INFO 10-19 02:08:57 [platform.py:70] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+host runner enabled=False: PASS
+Found existing installation: vllm-ascend-simllm 0.1.0.dev0
+Uninstalling vllm-ascend-simllm-0.1.0.dev0:
+  Successfully uninstalled vllm-ascend-simllm-0.1.0.dev0
+qualified host wheel activation, restart disable, overlay uninstall: PASS

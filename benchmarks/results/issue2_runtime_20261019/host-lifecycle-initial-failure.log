@@ -1,0 +1,56 @@
+WARNING: There was an error checking the latest version of pip.
+Processing ./.
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: vllm-ascend-simllm
+  Building wheel for vllm-ascend-simllm (pyproject.toml): started
+  Building wheel for vllm-ascend-simllm (pyproject.toml): finished with status 'done'
+  Created wheel for vllm-ascend-simllm: filename=vllm_ascend_simllm-0.1.0.dev0-py3-none-any.whl size=52647 sha256=12dc24c9992b12e19afd4a4bd1265d86c7990e262f641599489992d6053ab608
+  Stored in directory: /tmp/pip-ephem-wheel-cache-6oe2tqag/wheels/9a/b4/31/d0aef740570231475155d0bac09e3a77f6c66c67544aa7e972
+Successfully built vllm-ascend-simllm
+Processing /tmp/simllm-host-lifecycle-wd3lfgs2/vllm_ascend_simllm-0.1.0.dev0-py3-none-any.whl
+Installing collected packages: vllm-ascend-simllm
+Successfully installed vllm-ascend-simllm-0.1.0.dev0
+WARNING: There was an error checking the latest version of pip.
+[W1019 02:05:11.035529722 FunctionLoader.cpp:44] Warning: LD_PRELOAD detected, FunctionLoader prefers RTLD_DEFAULT for symbol resolution. (function operator())
+INFO 10-19 02:05:33 [__init__.py:52] Available plugins for group vllm.platform_plugins:
+INFO 10-19 02:05:33 [__init__.py:54] - ascend -> vllm_ascend:register
+INFO 10-19 02:05:33 [__init__.py:66] Loading plugin ascend
+INFO 10-19 02:05:33 [__init__.py:272] Platform plugin ascend is activated
+INFO 10-19 02:05:33 [platform.py:70] Breakable CUDAGraph on Ascend is opt-in; using VLLM_USE_BREAKABLE_CUDAGRAPH=0.
+Traceback (most recent call last):
+  File "<string>", line 4, in <module>
+  File "/data/jxd/src/vllm-ascend-hust-v1/vllm_ascend/worker/model_runner_v1.py", line 121, in <module>
+    from vllm_ascend.attention.attention_v1 import AscendAttentionBackend, AscendAttentionState
+  File "/data/jxd/src/vllm-ascend-hust-v1/vllm_ascend/attention/attention_v1.py", line 66, in <module>
+    from vllm_ascend.device.device_op import DeviceOperator
+  File "/data/jxd/src/vllm-ascend-hust-v1/vllm_ascend/device/device_op.py", line 28, in <module>
+    from vllm_ascend.ops.triton.fla.chunk_scaled_dot_kkt import chunk_scaled_dot_kkt_fwd_kernel
+  File "/data/jxd/src/vllm-ascend-hust-v1/vllm_ascend/ops/__init__.py", line 21, in <module>
+    import vllm_ascend.ops.fused_moe.fused_moe  # noqa
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/jxd/src/vllm-ascend-hust-v1/vllm_ascend/ops/fused_moe/fused_moe.py", line 30, in <module>
+    from vllm_ascend.ops.fused_moe.moe_comm_method import get_moe_comm_method, setup_moe_comm_method
+  File "/data/jxd/src/vllm-ascend-hust-v1/vllm_ascend/ops/fused_moe/moe_comm_method.py", line 33, in <module>
+    from vllm_ascend.ops.fused_moe.moe_mlp import apply_moe_mlp
+  File "/data/jxd/src/vllm-ascend-hust-v1/vllm_ascend/ops/fused_moe/moe_mlp.py", line 22, in <module>
+    from vllm_ascend.device.device_op import DeviceOperator
+ImportError: cannot import name 'DeviceOperator' from partially initialized module 'vllm_ascend.device.device_op' (most likely due to a circular import) (/data/jxd/src/vllm-ascend-hust-v1/vllm_ascend/device/device_op.py)
+[ERROR] 2026-10-19-02:05:51 (PID:35897, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception
+Traceback (most recent call last):
+  File "/tmp/simllm-issue2-oct19/benchmarks/verify_host_lifecycle.py", line 88, in <module>
+    if __name__ == "__main__":
+        ^^^^^^
+  File "/tmp/simllm-issue2-oct19/benchmarks/verify_host_lifecycle.py", line 68, in main
+    )
+    ^^
+  File "/tmp/simllm-issue2-oct19/benchmarks/verify_host_lifecycle.py", line 43, in run
+    env = {**clean_env, "VLLM_ASCEND_SIMLLM_ENABLED": str(int(enabled))}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/jxd/envs/vllm-hust-v1-cann91/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '('/tmp/simllm-host-lifecycle-wd3lfgs2/venv/bin/python', '-I', '-c', "\nimport sys\nimport vllm.platforms\nfrom vllm_ascend.worker.model_runner_v1 import NPUModelRunner\nfrom vllm_ascend_simllm import plugin\nplugin.register()\nenabled = sys.argv[1] == '1'\nassert (NPUModelRunner.execute_model.__module__ ==\n        'vllm_ascend_simllm.patch.patch_model_runner') == enabled\nassert (NPUModelRunner._model_forward.__module__ ==\n        'vllm_ascend_simllm.patch.patch_model_runner') == enabled\nif enabled:\n    plugin.register()\nprint('host runner enabled=' + str(enabled) + ': PASS')\n", '0')' returned non-zero exit status 1.
