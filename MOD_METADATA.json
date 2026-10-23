@@ -2,8 +2,8 @@
   "canonical_repository": "https://github.com/vLLM-HUST/vllm-ascend-simllm-hust",
   "display_name": "SimLLM",
   "evidence": {
-    "index": "https://github.com/vLLM-HUST/vllm-ascend-simllm-hust",
-    "latest_result": "https://github.com/vLLM-HUST/vllm-ascend-simllm-hust/pull/5",
+    "index": "https://github.com/vLLM-HUST/vllm-hust-benchmark/tree/71c2d4ad5f34536d73f66c577e1017da59dba085/archive/mod-git-20261022/website-source-vllm-ascend-simllm-hust/snapshot",
+    "latest_result": "https://github.com/vLLM-HUST/vllm-hust-benchmark/blob/71c2d4ad5f34536d73f66c577e1017da59dba085/archive/mod-git-20261022/website-source-vllm-ascend-simllm-hust/manifest.json",
     "performance_claims": [
       {
         "label": "matched-real-online-tested-cell",

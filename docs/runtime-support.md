@@ -7,7 +7,7 @@ test before they are described as supported.
 
 | Combination | Evidence | Limit |
 | --- | --- | --- |
-| Qwen3.5-35B-A3B W8A8, Ascend 910B3 TP1, vLLM `0.28.1.post1.dev143+gf18cf803c.empty`, vLLM Ascend `0.25.1rc2.dev125+hust.20260903.4.g74f0c0a27`, torch-npu `2.13.0rc1`, CANN 9.1 | [5,000-request paired similarity replay](../benchmarks/results/qwen35_latency_20261008/README.md) and non-model tests | Synthetic repeated-task workload; separate cards; task quality not established. |
+| Qwen3.5-35B-A3B W8A8, Ascend 910B3 TP1, vLLM `0.28.1.post1.dev143+gf18cf803c.empty`, vLLM Ascend `0.25.1rc2.dev125+hust.20260903.4.g74f0c0a27`, torch-npu `2.13.0rc1`, CANN 9.1 | [paired similarity replay](benchmark-custody.md) and non-model tests | Synthetic repeated-task workload; separate cards; task quality not established. |
 | Qwen3.5-35B-A3B BF16, Ascend 910B3 TP2, vLLM `0.28.1.post1.dev143+gf18cf803c`, CANN 9.1 | [20-item MMLU-Pro diagnostic](../benchmarks/results/mmlu_pro_bf16_910b3_20261011/README.md) | Plugin stored KV but had zero reuse; neither performance benefit nor formal V5.5 task score established. |
 | Clean Python 3.10/3.13 wheel without vLLM/torch/Ascend | `benchmarks/verify_wheel_lifecycle.py` | Entry-point discovery, inert installation, rejection of unqualified activation, fresh-process disable, uninstall; no model execution. |
 | Final `0c004bd` wheel, Python 3.11.16, Qwen3.5-35B-A3B W8A8, 910B3 TP1 eager, same recorded host packages | [Installed-wheel inference and rollback](../benchmarks/results/issue2_inference_rollback_20261019/README.md) | 30 requests per arm; 24 enabled semantic hits; restoring the old wheel disabled exactly reproduces 30 baseline outputs. Functional lifecycle check. |
