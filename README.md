@@ -146,7 +146,7 @@ All settings are read by the plugin from the worker process environment:
 `tail_anchor` is the default for Qwen3.5 hybrid models. It matches the quoted
 main topic and chat template, restores cached full-attention KV, resets
 recurrent state, and recomputes the final 512 target tokens. The
-[5,000-request latency replay](benchmarks/results/qwen35_latency_20261008/README.md)
+[paired replay collection](docs/benchmark-custody.md)
 measured 20.39% higher throughput, 16.74% lower median TTFT, and 11.32% lower
 p95 TTFT in the first run. The independent repeat measured 18.78%, 15.63%,
 and 11.27% respectively.
