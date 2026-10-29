@@ -8,13 +8,13 @@
       {
         "label": "matched-real-online-tested-cell",
         "scope": "Qwen3.5 W8A8, two independent 5,000-request fixed-card replays with one output token",
-        "result": "Throughput improved 20.39% and 18.78% with lower median and p95 TTFT; the prefill-dominant workload does not establish long-generation benefit."
+        "result": "On two fixed-card synthetic near-duplicate replays with native APC disabled and one output token, throughput improved 20.39% and 18.78%; repeat TTFT p50/p95 fell 15.63%/11.27%. Card effects and answer quality remain unmeasured for this workload."
       }
     ],
     "qualification": "qualified-in-tested-cell"
   },
   "lifecycle": {
-    "activation_contract": "See the extension manifest and README; discovery alone does not enable this MOD.",
+    "activation_contract": "See the extension manifest and README; discovery alone does not enable this MOD. The enabled Qwen3.5 default is approximate tail_anchor; leave disabled or validate exact mode for accuracy-sensitive tasks.",
     "default_enabled": false,
     "rollback_contract": "Disable the MOD and return to the unmodified host path.",
     "status": "incubating"
@@ -44,7 +44,10 @@
   "schema_version": "vllm-hust-mod-metadata-v1",
   "scope": {
     "mechanism": "kv_reuse_policy",
-    "out_of_scope": [],
+    "out_of_scope": [
+      "Accuracy guarantees from approximate KV reuse",
+      "Long-generation performance claims from one-token prefill replays"
+    ],
     "supported_workloads": []
   }
 }

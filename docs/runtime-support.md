@@ -13,7 +13,14 @@ test before they are described as supported.
 | Final `0c004bd` wheel, Python 3.11.16, Qwen3.5-35B-A3B W8A8, 910B3 TP1 eager, same recorded host packages | [Installed-wheel inference and rollback](../benchmarks/results/issue2_inference_rollback_20261019/README.md) | 30 requests per arm; 24 enabled semantic hits; restoring the old wheel disabled exactly reproduces 30 baseline outputs. Functional lifecycle check. |
 
 The W8A8 replay provides measured latency and throughput evidence for that
-exact setup. The BF16 run used the same cards for B0 and B1, but its local
+exact setup. The [existing-output audit](../benchmarks/results/issue3_quality_audit_20261029/README.md)
+links 24 approximate hits to cached source IDs. Twenty of their 16-token
+completion fragments differ from the disabled baseline; six misses match.
+This is an observed text difference, not a graded quality score. The 5,000
+request replay retained no decoded client text and used one output token, so
+its quality effect cannot be inferred. Native APC was disabled and the two
+fixed NPU cards were not swapped. The BF16 run used the same cards for B0 and B1,
+but its local
 zero-shot prompt and grader are not the dataset program's canonical contract.
 Formal V5.5 acceptance specifies 910B2 BF16 TP2 and additional signed runtime
 receipts. Neither 910B3 row is a substitute for that evaluation.

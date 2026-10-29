@@ -19,10 +19,14 @@ jobs:
       - name: Install lightweight test tools
         run: python -m pip install pytest ruff
       - name: Lint
-        run: ruff check src tests benchmarks/verify_wheel_lifecycle.py benchmarks/verify_host_lifecycle.py benchmarks/verify_inference_rollback.py benchmarks/snapshot_host_source.py
+        run: ruff check src tests benchmarks/verify_wheel_lifecycle.py benchmarks/verify_host_lifecycle.py benchmarks/verify_inference_rollback.py benchmarks/snapshot_host_source.py benchmarks/audit_issue3_reuse_outputs.py
       - name: Format
-        run: ruff format --check src tests benchmarks/verify_wheel_lifecycle.py benchmarks/verify_host_lifecycle.py benchmarks/verify_inference_rollback.py benchmarks/snapshot_host_source.py
+        run: ruff format --check src tests benchmarks/verify_wheel_lifecycle.py benchmarks/verify_host_lifecycle.py benchmarks/verify_inference_rollback.py benchmarks/snapshot_host_source.py benchmarks/audit_issue3_reuse_outputs.py
       - name: Configuration and activation tests
         run: PYTHONPATH=src python -m pytest -q tests/test_config.py tests/test_plugin.py tests/test_compatibility.py tests/test_inference_rollback.py
+      - name: Retained output and reuse-source audit
+        run: |
+          python benchmarks/audit_issue3_reuse_outputs.py benchmarks/results/issue2_inference_rollback_20261019 /tmp/issue3-comparisons.json
+          cmp /tmp/issue3-comparisons.json benchmarks/results/issue3_quality_audit_20261029/comparisons.json
       - name: Clean-wheel lifecycle
         run: python benchmarks/verify_wheel_lifecycle.py
