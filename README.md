@@ -52,13 +52,13 @@ The guarded `exact` policy requires a complete matching source prefix and a
 correct recurrent snapshot; it is distinct from approximate reuse and was not
 the policy measured in the latency replay.
 
-The [existing-output audit](benchmarks/results/issue3_quality_audit_20261029/README.md)
-found differing 16-token text fragments on 20 of 24 actual approximate hits;
-all six misses matched the disabled baseline. This is not a graded task-error
-rate. The 5,000-request performance replays generated one token per request
-and retained no decoded text in their client JSONL. Their observed throughput
-and TTFT gains apply only to the recorded synthetic similarity prefill workload
-with native vLLM APC disabled and fixed, different NPU cards.
+The [existing-output audit](https://github.com/vLLM-HUST/vllm-hust-benchmark/blob/e72ee33/reports/simllm-issue3-output-audit-20261029/README.md)
+traces actual approximate hits to cached sources and finds differing short
+output fragments. This is not a graded task-error rate. The historical
+performance replays generated one token per request and retained no decoded
+text in their client JSONL. Their observed gains apply only to the recorded
+synthetic similarity prefill workload with native vLLM APC disabled and fixed,
+different NPU cards.
 
 ## Install and run
 

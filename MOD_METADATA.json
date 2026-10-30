@@ -4,11 +4,12 @@
   "evidence": {
     "index": "https://github.com/vLLM-HUST/vllm-hust-benchmark/tree/71c2d4ad5f34536d73f66c577e1017da59dba085/archive/mod-git-20261022/website-source-vllm-ascend-simllm-hust/snapshot",
     "latest_result": "https://github.com/vLLM-HUST/vllm-hust-benchmark/blob/71c2d4ad5f34536d73f66c577e1017da59dba085/archive/mod-git-20261022/website-source-vllm-ascend-simllm-hust/manifest.json",
+    "quality_audit": "https://github.com/vLLM-HUST/vllm-hust-benchmark/blob/e72ee33/reports/simllm-issue3-output-audit-20261029/README.md",
     "performance_claims": [
       {
         "label": "matched-real-online-tested-cell",
         "scope": "Qwen3.5 W8A8, two independent 5,000-request fixed-card replays with one output token",
-        "result": "On two fixed-card synthetic near-duplicate replays with native APC disabled and one output token, throughput improved 20.39% and 18.78%; repeat TTFT p50/p95 fell 15.63%/11.27%. Card effects and answer quality remain unmeasured for this workload."
+        "result": "Observed gains are limited to the fixed-card, native-APC-off, one-output-token synthetic near-duplicate replay. Card effects and answer quality remain unmeasured for that replay; see benchmark custody for the numerical result."
       }
     ],
     "qualification": "qualified-in-tested-cell"
