@@ -37,6 +37,29 @@ source, the worker saves the completed target as a new approximate source.
 This keeps reusable spans from shrinking as the task cache turns over; these
 promoted states remain approximate.
 
+### Output fidelity and policy choice
+
+`tail_anchor` is the speed-oriented default when SimLLM is enabled on
+Qwen3.5. It is **approximate**: matching token-count cosine, a topic anchor and
+chat template do not guarantee that a changed number, negation, subject or
+instruction in the skipped prompt span will be reflected in the answer. The
+512-token target suffix recomputation does not repair an earlier skipped fact.
+Do not use this approximate policy as the default for tasks that require
+answer accuracy guarantees. Leave SimLLM disabled for those tasks until their
+quality has been measured, or explicitly evaluate
+`VLLM_ASCEND_SIMLLM_HYBRID_REUSE_MODE=exact` on the intended model and host.
+The guarded `exact` policy requires a complete matching source prefix and a
+correct recurrent snapshot; it is distinct from approximate reuse and was not
+the policy measured in the latency replay.
+
+The [existing-output audit](https://github.com/vLLM-HUST/vllm-hust-benchmark/blob/e72ee33/reports/simllm-issue3-output-audit-20261029/README.md)
+traces actual approximate hits to cached sources and finds differing short
+output fragments. This is not a graded task-error rate. The historical
+performance replays generated one token per request and retained no decoded
+text in their client JSONL. Their observed gains apply only to the recorded
+synthetic similarity prefill workload with native vLLM APC disabled and fixed,
+different NPU cards.
+
 ## Install and run
 
 Install vLLM and vLLM Ascend for your NPU environment, then install this
@@ -143,13 +166,15 @@ All settings are read by the plugin from the worker process environment:
 
 ### Qwen3.5 hybrid reuse policies
 
-`tail_anchor` is the default for Qwen3.5 hybrid models. It matches the quoted
+`tail_anchor` is the speed-oriented default for Qwen3.5 hybrid models. It matches the quoted
 main topic and chat template, restores cached full-attention KV, resets
 recurrent state, and recomputes the final 512 target tokens. The
 [paired replay collection](docs/benchmark-custody.md)
 measured 20.39% higher throughput, 16.74% lower median TTFT, and 11.32% lower
 p95 TTFT in the first run. The independent repeat measured 18.78%, 15.63%,
-and 11.27% respectively.
+and 11.27% respectively. Those are fixed-card observations on near-duplicate
+prompts with one output token and native APC disabled, not a guarantee for
+long generations or answer accuracy.
 
 Other policies are `aggressive`, `exact`, `aligned`, and `tail`. `tail` also
 requires matching secondary context topics; `exact` requires a complete source

@@ -4,17 +4,18 @@
   "evidence": {
     "index": "https://github.com/vLLM-HUST/vllm-hust-benchmark/tree/71c2d4ad5f34536d73f66c577e1017da59dba085/archive/mod-git-20261022/website-source-vllm-ascend-simllm-hust/snapshot",
     "latest_result": "https://github.com/vLLM-HUST/vllm-hust-benchmark/blob/71c2d4ad5f34536d73f66c577e1017da59dba085/archive/mod-git-20261022/website-source-vllm-ascend-simllm-hust/manifest.json",
+    "quality_audit": "https://github.com/vLLM-HUST/vllm-hust-benchmark/blob/e72ee33/reports/simllm-issue3-output-audit-20261029/README.md",
     "performance_claims": [
       {
         "label": "matched-real-online-tested-cell",
         "scope": "Qwen3.5 W8A8, two independent 5,000-request fixed-card replays with one output token",
-        "result": "Throughput improved 20.39% and 18.78% with lower median and p95 TTFT; the prefill-dominant workload does not establish long-generation benefit."
+        "result": "Observed gains are limited to the fixed-card, native-APC-off, one-output-token synthetic near-duplicate replay. Card effects and answer quality remain unmeasured for that replay; see benchmark custody for the numerical result."
       }
     ],
     "qualification": "qualified-in-tested-cell"
   },
   "lifecycle": {
-    "activation_contract": "See the extension manifest and README; discovery alone does not enable this MOD.",
+    "activation_contract": "See the extension manifest and README; discovery alone does not enable this MOD. The enabled Qwen3.5 default is approximate tail_anchor; leave disabled or validate exact mode for accuracy-sensitive tasks.",
     "default_enabled": false,
     "rollback_contract": "Disable the MOD and return to the unmodified host path.",
     "status": "incubating"
@@ -44,7 +45,10 @@
   "schema_version": "vllm-hust-mod-metadata-v1",
   "scope": {
     "mechanism": "kv_reuse_policy",
-    "out_of_scope": [],
+    "out_of_scope": [
+      "Accuracy guarantees from approximate KV reuse",
+      "Long-generation performance claims from one-token prefill replays"
+    ],
     "supported_workloads": []
   }
 }

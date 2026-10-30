@@ -13,7 +13,13 @@ test before they are described as supported.
 | Final `0c004bd` wheel, Python 3.11.16, Qwen3.5-35B-A3B W8A8, 910B3 TP1 eager, same recorded host packages | [Installed-wheel inference and rollback](../benchmarks/results/issue2_inference_rollback_20261019/README.md) | 30 requests per arm; 24 enabled semantic hits; restoring the old wheel disabled exactly reproduces 30 baseline outputs. Functional lifecycle check. |
 
 The W8A8 replay provides measured latency and throughput evidence for that
-exact setup. The BF16 run used the same cards for B0 and B1, but its local
+exact setup. The [existing-output audit](https://github.com/vLLM-HUST/vllm-hust-benchmark/blob/e72ee33/reports/simllm-issue3-output-audit-20261029/README.md)
+links approximate hits to cached source IDs and finds short completion text
+differences from the disabled baseline. This is not a graded quality score.
+The historical replay retained no decoded client text and used one output
+token, so its quality effect cannot be inferred. Native APC was disabled and
+the two fixed NPU cards were not swapped. The BF16 run used the same cards for
+B0 and B1, but its local
 zero-shot prompt and grader are not the dataset program's canonical contract.
 Formal V5.5 acceptance specifies 910B2 BF16 TP2 and additional signed runtime
 receipts. Neither 910B3 row is a substitute for that evaluation.
