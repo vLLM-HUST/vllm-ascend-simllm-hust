@@ -39,7 +39,7 @@ promoted states remain approximate.
 
 ### Output fidelity and policy choice
 
-`tail_anchor` is the latency-oriented default when SimLLM is enabled on
+`tail_anchor` is the speed-oriented default when SimLLM is enabled on
 Qwen3.5. It is **approximate**: matching token-count cosine, a topic anchor and
 chat template do not guarantee that a changed number, negation, subject or
 instruction in the skipped prompt span will be reflected in the answer. The
@@ -166,7 +166,7 @@ All settings are read by the plugin from the worker process environment:
 
 ### Qwen3.5 hybrid reuse policies
 
-`tail_anchor` is the latency-oriented default for Qwen3.5 hybrid models. It matches the quoted
+`tail_anchor` is the speed-oriented default for Qwen3.5 hybrid models. It matches the quoted
 main topic and chat template, restores cached full-attention KV, resets
 recurrent state, and recomputes the final 512 target tokens. The
 [paired replay collection](docs/benchmark-custody.md)
