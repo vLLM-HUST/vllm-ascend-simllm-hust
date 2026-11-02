@@ -85,6 +85,46 @@ def test_token_only_snapshot_preparation_avoids_model_and_device(monkeypatch, mo
     assert runner._simllm_batch_hashes is None
 
 
+def test_min_prompt_tokens_skips_short_snapshot_and_match(monkeypatch):
+    monkeypatch.setattr(
+        patch,
+        "_simllm_config",
+        SimLLMConfig(hybrid_reuse_mode="tail_anchor", min_prompt_tokens=8),
+    )
+    runner = SimpleNamespace(_has_gdn=True)
+    output = SimpleNamespace(
+        scheduled_new_reqs=[
+            SimpleNamespace(req_id="short", prompt_token_ids=[1] * 7),
+            SimpleNamespace(req_id="long", prompt_token_ids=[1] * 8),
+        ]
+    )
+    patch._simllm_preprocess_from_scheduler(runner, output)
+    assert set(runner._simllm_pending_prompts) == {"long"}
+    assert set(runner._simllm_prompt_token_ids) == {"long"}
+
+    source = _task(tuple([1] * 8), (1.0,))
+    semantic = {
+        index: MatchResult(
+            matched=True,
+            layer_kv=source.layer_kv,
+            prefix_len=8,
+            match_type="semantic",
+        )
+        for index in (0, 1)
+    }
+    selected = patch._simllm_select_reuse(
+        SimpleNamespace(
+            scheduled_new_reqs=[
+                SimpleNamespace(prompt_token_ids=[1] * 7, num_computed_tokens=0),
+                SimpleNamespace(prompt_token_ids=[1] * 9, num_computed_tokens=0),
+            ]
+        ),
+        semantic,
+        exact_matches={},
+    )
+    assert set(selected) == {1}
+
+
 def test_hybrid_exact_mode_requires_complete_shorter_source(monkeypatch):
     manager = KVManager()
     manager.store(_task((1, 2, 3, 4, 5), (1.0, 2.0)))

@@ -157,6 +157,7 @@ All settings are read by the plugin from the worker process environment:
 | `KV_CACHE_MAX_BYTES` | `536870912` | Maximum bytes retained for prompt KV |
 | `HYBRID_REUSE_MODE` | `tail_anchor` | `aggressive`, `exact`, `aligned`, `tail`, or `tail_anchor`; experimental hybrid policies described below |
 | `HYBRID_RECOMPUTE_TOKENS` | `512` | Positive target suffix length to recompute for approximate `tail` and `tail_anchor` hits |
+| `MIN_PROMPT_TOKENS` | `0` | Optional prompt-token floor for matching and KV snapshots; `8192` is the tested long-context latency setting |
 | `SANDWICH_BOTTOM` | `3` | Reserved for the inactive legacy sandwich path |
 | `SANDWICH_TOP` | `3` | Reserved for the inactive legacy sandwich path |
 | `EMBEDDING_POOLING` | `mean` | `mean`, `last`, or `cls` |
@@ -180,6 +181,14 @@ Other policies are `aggressive`, `exact`, `aligned`, and `tail`. `tail` also
 requires matching secondary context topics; `exact` requires a complete source
 prefix and captured recurrent state. The quoted-topic heuristic is specific to
 the synthetic similarity workload.
+
+For latency-sensitive sequential requests, set
+`VLLM_ASCEND_SIMLLM_MIN_PROMPT_TOKENS=8192` to avoid snapshotting and matching
+short prompts. This admission rule does not repair answer quality: longer
+prompts still use approximate KV and can return stale facts. The floor is
+optional because it may remove the throughput benefit seen on shorter,
+concurrent similarity workloads. Measure the floor against the intended
+request lengths, concurrency and output budget.
 
 ## Test
 
