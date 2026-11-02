@@ -190,6 +190,11 @@ optional because it may remove the throughput benefit seen on shorter,
 concurrent similarity workloads. Measure the floor against the intended
 request lengths, concurrency and output budget.
 
+The [Issue #3 admission report](https://github.com/vLLM-HUST/vllm-hust-benchmark/tree/codex/issue3-ttft-admission-evidence/reports/simllm-issue3-ttft-admission-20261102)
+contains paired Qwen3.5-35B-A3B measurements, full outputs, and reproduction
+scripts. Its 16k-token result uses constructed long context; results on the
+original similarity workload are reported separately.
+
 ## Test
 
 ```bash
