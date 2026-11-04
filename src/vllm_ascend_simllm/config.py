@@ -34,6 +34,7 @@ _SUFFIXES = frozenset(
         "KV_CACHE_MAX_BYTES",
         "HYBRID_REUSE_MODE",
         "HYBRID_RECOMPUTE_TOKENS",
+        "MIN_PROMPT_TOKENS",
         "SANDWICH_BOTTOM",
         "SANDWICH_TOP",
         "EMBEDDING_POOLING",
@@ -85,6 +86,9 @@ class SimLLMConfig:
     hybrid_reuse_mode: str = "tail_anchor"
     # Positive number of target suffix tokens to recompute in tail mode.
     hybrid_recompute_tokens: int = 512
+    # Optional admission floor for latency-focused deployments. Zero preserves
+    # the existing policy; shorter prompts neither match nor create snapshots.
+    min_prompt_tokens: int = 0
 
     # -- Sandwich config ----------------------------------------------------
     sandwich_bottom: int = 3
@@ -134,6 +138,8 @@ class SimLLMConfig:
             )
         if self.hybrid_recompute_tokens < 1:
             raise ValueError("HYBRID_RECOMPUTE_TOKENS must be positive")
+        if self.min_prompt_tokens < 0:
+            raise ValueError("MIN_PROMPT_TOKENS must be nonnegative")
 
     @classmethod
     def from_env(cls) -> SimLLMConfig:
@@ -161,6 +167,7 @@ class SimLLMConfig:
             ),
             hybrid_reuse_mode=_environment("HYBRID_REUSE_MODE", "tail_anchor"),
             hybrid_recompute_tokens=int(_environment("HYBRID_RECOMPUTE_TOKENS", "512")),
+            min_prompt_tokens=int(_environment("MIN_PROMPT_TOKENS", "0")),
             sandwich_bottom=int(_environment("SANDWICH_BOTTOM", "3")),
             sandwich_top=int(_environment("SANDWICH_TOP", "3")),
             embedding_pooling=_environment("EMBEDDING_POOLING", "mean"),

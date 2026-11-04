@@ -16,6 +16,7 @@ def test_defaults_are_disabled(monkeypatch) -> None:
         "LSH_HAMMING_RADIUS",
         "HYBRID_REUSE_MODE",
         "HYBRID_RECOMPUTE_TOKENS",
+        "MIN_PROMPT_TOKENS",
         "SANDWICH_BOTTOM",
         "SANDWICH_TOP",
         "EMBEDDING_POOLING",
@@ -61,6 +62,14 @@ def test_unknown_hybrid_mode_fails_instead_of_using_aggressive(monkeypatch) -> N
 def test_tail_requires_positive_recompute_window(monkeypatch, tokens) -> None:
     monkeypatch.setenv("VLLM_ASCEND_SIMLLM_HYBRID_RECOMPUTE_TOKENS", tokens)
     with pytest.raises(ValueError, match="HYBRID_RECOMPUTE_TOKENS"):
+        SimLLMConfig.from_env()
+
+
+def test_min_prompt_tokens_can_guard_short_requests(monkeypatch) -> None:
+    monkeypatch.setenv("VLLM_ASCEND_SIMLLM_MIN_PROMPT_TOKENS", "8192")
+    assert SimLLMConfig.from_env().min_prompt_tokens == 8192
+    monkeypatch.setenv("VLLM_ASCEND_SIMLLM_MIN_PROMPT_TOKENS", "-1")
+    with pytest.raises(ValueError, match="MIN_PROMPT_TOKENS"):
         SimLLMConfig.from_env()
 
 

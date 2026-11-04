@@ -157,6 +157,7 @@ All settings are read by the plugin from the worker process environment:
 | `KV_CACHE_MAX_BYTES` | `536870912` | Maximum bytes retained for prompt KV |
 | `HYBRID_REUSE_MODE` | `tail_anchor` | `aggressive`, `exact`, `aligned`, `tail`, or `tail_anchor`; experimental hybrid policies described below |
 | `HYBRID_RECOMPUTE_TOKENS` | `512` | Positive target suffix length to recompute for approximate `tail` and `tail_anchor` hits |
+| `MIN_PROMPT_TOKENS` | `0` | Optional prompt-token floor for matching and KV snapshots |
 | `SANDWICH_BOTTOM` | `3` | Reserved for the inactive legacy sandwich path |
 | `SANDWICH_TOP` | `3` | Reserved for the inactive legacy sandwich path |
 | `EMBEDDING_POOLING` | `mean` | `mean`, `last`, or `cls` |
@@ -180,6 +181,12 @@ Other policies are `aggressive`, `exact`, `aligned`, and `tail`. `tail` also
 requires matching secondary context topics; `exact` requires a complete source
 prefix and captured recurrent state. The quoted-topic heuristic is specific to
 the synthetic similarity workload.
+
+For sequential requests, set `VLLM_ASCEND_SIMLLM_MIN_PROMPT_TOKENS` to omit
+shorter prompts from matching and snapshot creation. Longer prompts still use
+approximate KV and can return stale facts. Select the floor using the intended
+request lengths, concurrency, and output budget. The [Issue report](https://github.com/vLLM-HUST/vllm-hust-benchmark/pull/598)
+contains paired measurements, full outputs, and reproduction scripts.
 
 ## Test
 

@@ -292,8 +292,9 @@ def _simllm_preprocess_from_scheduler(self: Any, scheduler_output: Any) -> None:
         req.req_id: tuple(req.prompt_token_ids)
         for req in new_reqs
         if _simllm_request_cacheable(req)
+        and len(req.prompt_token_ids) >= getattr(_simllm_config, "min_prompt_tokens", 0)
     }
-    if not new_reqs:
+    if not self._simllm_prompt_token_ids:
         self._simllm_batch_embeddings = None
         self._simllm_batch_hashes = None
         self._simllm_batch_req_ids = None
@@ -925,7 +926,9 @@ def _simllm_identify_prefixes(
         if not _simllm_request_cacheable(req):
             continue
         token_ids = tuple(req.prompt_token_ids or ())
-        if req.num_computed_tokens or len(token_ids) < 2:
+        if req.num_computed_tokens or len(token_ids) < max(
+            2, getattr(_simllm_config, "min_prompt_tokens", 0)
+        ):
             continue
         result = _kv_manager.longest_prefix_match(
             token_ids, complete_source_only=complete_source_only
@@ -1017,6 +1020,8 @@ def _simllm_identify_token_overlap(
         if not _simllm_request_cacheable(req) or req.num_computed_tokens:
             continue
         token_ids = tuple(req.prompt_token_ids)
+        if len(token_ids) < getattr(_simllm_config, "min_prompt_tokens", 0):
+            continue
         anchor, template, context_topics = (None, None, None)
         if anchored or aligned:
             if self is None:
@@ -1072,6 +1077,8 @@ def _simllm_select_reuse(
             continue
         req = scheduler_output.scheduled_new_reqs[batch_idx]
         if not _simllm_request_cacheable(req) or req.num_computed_tokens:
+            continue
+        if len(req.prompt_token_ids) < getattr(_simllm_config, "min_prompt_tokens", 0):
             continue
         available = min(semantic.prefix_len, len(req.prompt_token_ids))
         if (
